@@ -1,0 +1,42 @@
+services:
+  dicom-api:
+    build: .
+    restart: unless-stopped
+    environment:
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
+      MAX_UPLOAD_BYTES: ${MAX_UPLOAD_BYTES:-15728640}
+      MAX_BATCH_UPLOAD_BYTES: ${MAX_BATCH_UPLOAD_BYTES:-536870912}
+      MAX_BATCH_ARCHIVE_BYTES: ${MAX_BATCH_ARCHIVE_BYTES:-536870912}
+      MAX_BATCH_FILES: ${MAX_BATCH_FILES:-500}
+      UPLOAD_CHUNK_BYTES: ${UPLOAD_CHUNK_BYTES:-65536}
+      MAX_DECODED_SAMPLES: ${MAX_DECODED_SAMPLES:-24000000}
+    expose:
+      - "8000"
+    volumes:
+      - dicom-tmp:/tmp/dicom-tmp
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - from urllib.request import urlopen; urlopen('http://127.0.0.1:8000/health', timeout=3)
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    depends_on:
+      dicom-api:
+        condition: service_healthy
+    command:
+      - tunnel
+      - --no-autoupdate
+      - run
+      - --token
+      - ${CLOUDFLARE_TUNNEL_TOKEN:?Set CLOUDFLARE_TUNNEL_TOKEN in .env}
+
+volumes:
+  dicom-tmp:

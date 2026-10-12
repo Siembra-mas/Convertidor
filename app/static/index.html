@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#edf1ec">
+  <title>Convertidor DICOM</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Convertidor DICOM, inicio">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7.5h6l2 2h8v8.8A1.7 1.7 0 0 1 18.3 20H5.7A1.7 1.7 0 0 1 4 18.3z"/><path d="M12 11.5v5m-2.5-2.5h5"/></svg>
+      </span>
+      <span>DICOM <span class="brand-arrow">/</span> PNG</span>
+    </a>
+    <span class="secure-label">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 19 6v5c0 4.8-2.9 8-7 10-4.1-2-7-5.2-7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>
+      Procesamiento privado
+    </span>
+  </header>
+
+  <main>
+    <section class="upload-panel" aria-labelledby="upload-title">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Conversión </p>
+          <h1 id="upload-title">Subir imágenes</h1>
+        </div>
+        <span class="limit">Hasta 500</span>
+      </div>
+
+      <div class="panel-body">
+        <input id="file-input" type="file" accept=".dcm,application/dicom" multiple aria-label="Seleccionar archivos DICOM">
+        <input id="folder-input" type="file" accept=".dcm,application/dicom" webkitdirectory directory multiple hidden aria-label="Seleccionar carpeta con DICOM">
+        <label id="dropzone" class="dropzone" for="file-input">
+          <span class="upload-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/></svg>
+          </span>
+          <p class="drop-title">Arrastra archivos DCM</p>
+          <p class="drop-copy">Selecciona varios archivos o una carpeta completa</p>
+          <span class="browse">Elegir archivos</span>
+          <span class="formats">15 MB por archivo · 512 MB por lote</span>
+        </label>
+        <button id="choose-folder" class="folder-button" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3.5 7A1.5 1.5 0 0 1 5 5.5h5l2 2h7A1.5 1.5 0 0 1 20.5 9v9A1.5 1.5 0 0 1 19 19.5H5A1.5 1.5 0 0 1 3.5 18z"/></svg>
+          Elegir carpeta
+        </button>
+
+        <div id="file-card" class="file-card" aria-live="polite">
+          <span class="file-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3.8h8l4 4v12.4H6z"/><path d="M14 4v4h4M9 13h6m-6 3h6"/></svg>
+          </span>
+          <div class="file-info"><div id="file-name" class="file-name"></div><div id="file-size" class="file-size"></div></div>
+          <button id="remove-file" class="remove-file" type="button" aria-label="Quitar selección" title="Quitar selección">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 6 12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+        <div id="progress" class="progress" aria-hidden="true"><span></span></div>
+        <div class="actions">
+          <button id="convert" class="convert" type="button" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+            Convertir y descargar ZIP
+          </button>
+          <a id="download" class="download" download="imagenes_convertidas.zip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v11m0 0 4-4m-4 4-4-4"/><path d="M5 17v3h14v-3"/></svg>
+            Descargar ZIP
+          </a>
+        </div>
+        <p class="footnote">Los archivos se convierten uno a uno. El ZIP incluye solo imágenes PNG, sin metadatos DICOM.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
